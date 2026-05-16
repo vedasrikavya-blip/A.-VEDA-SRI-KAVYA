@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 1. Global Helpers
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+
+    // 2. User Rules
+    match /users/{userId} {
+      function isValidUser(data) {
+        return data.uid == userId
+          && data.email is string && data.email.size() <= 256
+          && (!('plan' in data) || data.plan in ['free', 'pro', 'team']);
+      }
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && isValidUser(incoming())
+        && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'plan']);
+    }
+
+    // 3. Meeting Rules
+    match /meetings/{meetingId} {
+      function isValidMeeting(data) {
+        return isValidId(data.userId) 
+          && data.userId == request.auth.uid
+          && data.title is string && data.title.size() <= 500
+          && data.content is string && data.content.size() <= 1000000;
+      }
+      // Explicitly check resource.data for list queries
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidMeeting(incoming()) && incoming().createdAt is string;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid 
+        && isValidMeeting(incoming())
+        && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'summary', 'sentiment', 'followUpEmail', 'topics', 'keyPoints']);
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // 4. Task Rules
+    match /tasks/{taskId} {
+      function isValidTask(data) {
+        return isValidId(data.userId)
+          && data.userId == request.auth.uid
+          && isValidId(data.meetingId)
+          && data.task is string && data.task.size() <= 1000;
+      }
+      // Explicitly check resource.data for list queries
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidTask(incoming()) && incoming().createdAt is string;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid 
+        && isValidTask(incoming())
+        && (
+          // Action: Toggle completion
+          incoming().diff(existing()).affectedKeys().hasOnly(['completed']) ||
+          // Action: Edit task details
+          incoming().diff(existing()).affectedKeys().hasOnly(['task', 'owner', 'deadline', 'priority'])
+        );
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

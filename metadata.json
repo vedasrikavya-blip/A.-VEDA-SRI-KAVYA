@@ -1,0 +1,6 @@
+{
+  "name": "NoteGenius AI",
+  "description": "Convert meeting notes or transcripts into summaries, action items, owners, deadlines and follow-up emails.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
