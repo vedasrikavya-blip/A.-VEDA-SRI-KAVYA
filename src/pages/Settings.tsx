@@ -21,119 +21,123 @@ export default function Settings() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FBFBFA]">
+    <div className="flex min-h-screen bg-black font-sans text-cyan-400">
+      <div className="crt-scanline"></div>
       <Sidebar />
       
-      <main className="flex-1 p-10 overflow-y-auto">
-        <header className="mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">Settings</h1>
-          <p className="text-sm text-gray-500 font-medium">Manage your workspace and account preferences.</p>
+      <main className="flex-1 p-10 overflow-y-auto relative">
+        <header className="mb-12">
+          <h1 className="text-3xl font-pixel uppercase tracking-widest text-white glitch-text mb-3">System_Config</h1>
+          <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-[0.2em]">Manage node preferences and identity authentication.</p>
         </header>
 
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-10">
           {/* Main Settings */}
-          <div className="col-span-2 space-y-8">
-            <Card className="border-none shadow-sm shadow-slate-100 rounded-3xl p-8 bg-white">
-              <div className="flex items-center gap-4 mb-8">
-                 <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center">
+          <div className="col-span-2 space-y-10">
+            <Card className="rounded-none border-2 border-zinc-900 bg-zinc-950 p-8 shadow-[10px_10px_0px_#000]">
+              <div className="flex items-center gap-6 mb-10">
+                 <div className="w-20 h-20 border-2 border-cyan-400 bg-black flex items-center justify-center shadow-[4px_4px_0px_#FF00FF]">
                     {user?.photoURL ? (
-                      <img src={user.photoURL} alt="Profile" className="w-full h-full rounded-2xl object-cover" />
+                      <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                      <User className="text-amber-600 w-8 h-8" />
+                      <User className="text-cyan-400 w-10 h-10" />
                     )}
                  </div>
                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">{user?.displayName || "Research User"}</h2>
-                    <p className="text-sm text-slate-500 font-medium">{user?.email}</p>
+                    <h2 className="text-2xl font-pixel text-white uppercase tracking-widest">{user?.displayName || "Research_Node_01"}</h2>
+                    <p className="text-xs font-mono text-zinc-500 uppercase mt-1">[{user?.email}]</p>
                  </div>
-                 <Button variant="outline" className="ml-auto rounded-xl h-10 border-slate-100 font-bold text-xs">
-                    Change Identity
+                 <Button variant="outline" className="ml-auto rounded-none border-2 border-zinc-900 bg-transparent text-zinc-500 hover:text-cyan-400 hover:border-cyan-400 font-pixel text-[10px] uppercase h-10 px-4">
+                    REAUTH_IDENTITY
                  </Button>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
-                 <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Display Name</label>
-                    <Input defaultValue={user?.displayName || ""} className="h-12 rounded-2xl border-slate-100 bg-slate-50 border-none shadow-none focus:ring-amber-500 font-medium" />
+              <div className="grid grid-cols-2 gap-8">
+                 <div className="space-y-3">
+                    <label className="text-[10px] font-black text-zinc-800 uppercase tracking-[0.3em] px-1">OPERATOR_ALIAS</label>
+                    <Input defaultValue={user?.displayName || ""} className="rounded-none h-14 border-2 border-zinc-900 bg-black focus:border-cyan-400 text-cyan-400 font-mono placeholder:text-zinc-900" />
                  </div>
-                 <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Contact Email</label>
-                    <Input defaultValue={user?.email || ""} className="h-12 rounded-2xl border-slate-100 bg-slate-50 border-none shadow-none font-medium opacity-50" disabled />
+                 <div className="space-y-3">
+                    <label className="text-[10px] font-black text-zinc-800 uppercase tracking-[0.3em] px-1">COMM_CHANNEL</label>
+                    <Input defaultValue={user?.email || ""} className="rounded-none h-14 border-2 border-zinc-900 bg-zinc-950 text-zinc-700 font-mono opacity-50" disabled />
                  </div>
               </div>
             </Card>
 
-            <Card className="border-none shadow-sm shadow-slate-100 rounded-3xl p-8 bg-white">
-              <h3 className="text-lg font-bold text-slate-900 mb-6 font-display">Preferences</h3>
+            <Card className="rounded-none border-2 border-zinc-900 bg-zinc-950 p-8 shadow-[10px_10px_0px_#000]">
+              <h3 className="text-xl font-pixel text-white uppercase tracking-widest mb-10">Protocol_Directives</h3>
               
               <div className="space-y-6">
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm">
-                       <Bell size={18} />
+                <div className="flex items-center justify-between p-6 bg-black border border-zinc-900">
+                  <div className="flex items-center gap-6">
+                    <div className="w-12 h-12 border border-zinc-900 flex items-center justify-center text-zinc-500">
+                       <Bell size={20} />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-slate-900">Push Notifications</p>
-                      <p className="text-[10px] text-slate-400 font-semibold">Get alerts when analysis completes</p>
+                      <p className="text-sm font-pixel text-white uppercase tracking-widest">Neural_Alerts</p>
+                      <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-tighter mt-1">Notify on synthesis completion</p>
                     </div>
                   </div>
-                  <Switch checked={notifications} onCheckedChange={setNotifications} />
+                  <Switch checked={notifications} onCheckedChange={setNotifications} className="data-[state=checked]:bg-cyan-400" />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm">
-                       <Shield size={18} />
+                <div className="flex items-center justify-between p-6 bg-black border border-zinc-900">
+                  <div className="flex items-center gap-6">
+                    <div className="w-12 h-12 border border-zinc-900 flex items-center justify-center text-zinc-500">
+                       <Shield size={20} />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-slate-900">Automatic PDF Export</p>
-                      <p className="text-[10px] text-slate-400 font-semibold">Store copies on completion</p>
+                      <p className="text-sm font-pixel text-white uppercase tracking-widest">Auto_Cipher_Export</p>
+                      <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-tighter mt-1">Archive PDF copies on finalization</p>
                     </div>
                   </div>
-                  <Switch checked={autoExport} onCheckedChange={setAutoExport} />
+                  <Switch checked={autoExport} onCheckedChange={setAutoExport} className="data-[state=checked]:bg-magenta-500" />
                 </div>
               </div>
             </Card>
 
             <div className="flex justify-end pt-4">
-               <Button onClick={handleSave} className="bg-[#F59E0B] text-white px-8 h-12 rounded-2xl font-bold shadow-md shadow-amber-100 hover:bg-[#D97706] transition-all flex items-center gap-2">
-                  <Save size={18} />
-                  Save Workspace Changes
+               <Button onClick={handleSave} className="bg-magenta-500 text-white px-10 h-16 rounded-none font-pixel text-lg shadow-[6px_6px_0px_#00FFFF] hover:bg-magenta-600 transition-all uppercase flex items-center gap-3">
+                  <Save size={24} />
+                  COMMIT_SYSTEM_CHANGES
                </Button>
             </div>
           </div>
 
           {/* Sidebar Settings Info */}
-          <div className="space-y-6">
-             <Card className="border-none shadow-sm shadow-slate-100 rounded-3xl p-6 bg-white">
-                <h4 className="font-bold text-amber-600 text-xs uppercase tracking-widest mb-4">Account Status</h4>
-                <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
-                   <Wallet className="text-amber-600" size={20} />
+          <div className="space-y-10">
+             <Card className="rounded-none border-2 border-zinc-900 bg-zinc-950 p-8 shadow-[10px_10px_0px_#000]">
+                <h4 className="font-pixel text-magenta-500 text-xs uppercase tracking-[0.2em] mb-6">Uplink_Tier</h4>
+                <div className="flex items-center gap-4 p-5 bg-magenta-950/20 border border-magenta-900">
+                   <Wallet className="text-magenta-500" size={24} />
                    <div>
-                      <p className="text-sm font-bold text-amber-900">Pro Plan</p>
-                      <p className="text-[10px] text-amber-600 font-bold uppercase tracking-tight">Active Membership</p>
+                      <p className="text-base font-pixel text-white uppercase tracking-widest leading-none">ELITE_PROTOCOL</p>
+                      <p className="text-[10px] text-magenta-600 font-mono uppercase tracking-widest mt-2">Active_Lease</p>
                    </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-slate-50">
-                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Security</p>
-                   <Button variant="ghost" className="w-full justify-start rounded-xl h-10 text-slate-600 font-semibold text-xs transition-colors hover:bg-slate-50">
-                      <Shield size={14} className="mr-2" /> 2FA Setup
+                <div className="mt-10 pt-8 border-t border-zinc-900 font-mono">
+                   <p className="text-[10px] font-black text-zinc-800 uppercase tracking-[0.4em] mb-6 px-1">SECURITY_MODULES</p>
+                   <Button variant="ghost" className="w-full justify-start rounded-none h-12 text-zinc-500 font-pixel text-[10px] uppercase hover:text-cyan-400 hover:bg-black transition-colors px-4 border border-transparent hover:border-zinc-800">
+                      <Shield size={14} className="mr-3" /> 2FA_SYNTAX
                    </Button>
-                   <Button variant="ghost" className="w-full justify-start rounded-xl h-10 text-slate-600 font-semibold text-xs transition-colors hover:bg-slate-50">
-                      <Moon size={14} className="mr-2" /> Appearance
+                   <Button variant="ghost" className="w-full justify-start rounded-none h-12 text-zinc-500 font-pixel text-[10px] uppercase hover:text-cyan-400 hover:bg-black transition-colors px-4 border border-transparent hover:border-zinc-800 mt-2">
+                      <Moon size={14} className="mr-3" /> SPECTRAL_THEME
                    </Button>
-                   <Button variant="ghost" className="w-full justify-start rounded-xl h-10 text-slate-600 font-semibold text-xs transition-colors hover:bg-slate-50">
-                      <Globe size={14} className="mr-2" /> Localization
+                   <Button variant="ghost" className="w-full justify-start rounded-none h-12 text-zinc-500 font-pixel text-[10px] uppercase hover:text-cyan-400 hover:bg-black transition-colors px-4 border border-transparent hover:border-zinc-800 mt-2">
+                      <Globe size={14} className="mr-3" /> LINGUAL_ENCRYPT
                    </Button>
                 </div>
              </Card>
 
-             <Card className="border-none shadow-sm shadow-slate-100 rounded-3xl p-6 bg-slate-900 text-white">
-                <HelpCircle className="text-amber-500 mb-4" size={24} />
-                <h4 className="font-bold text-lg mb-1 tracking-tight">Need help?</h4>
-                <p className="text-xs text-slate-400 font-medium mb-6 leading-relaxed">Our AI experts are available 24/7 to help you optimize your meeting extracts.</p>
-                <Button className="w-full bg-white text-slate-900 rounded-xl h-10 font-bold text-xs hover:bg-slate-100">
-                   Contact Support
+             <Card className="rounded-none border-2 border-magenta-500 bg-black text-white p-8 shadow-[10px_10px_0px_#00FFFF] relative overflow-hidden group">
+                <div className="absolute -top-4 -right-4 text-magenta-900/10 group-hover:text-magenta-900/20 transition-colors">
+                  <HelpCircle size={120} />
+                </div>
+                <HelpCircle className="text-cyan-400 mb-6" size={32} />
+                <h4 className="font-pixel text-2xl mb-2 tracking-widest uppercase text-white">Support_Node</h4>
+                <p className="text-[10px] text-zinc-500 font-mono uppercase leading-relaxed mb-10 tracking-tighter">Our synthesis experts are on standby 24/7 to optimize your conversational throughput.</p>
+                <Button className="w-full bg-white text-black rounded-none h-14 font-pixel text-sm hover:bg-zinc-200 shadow-[4px_4px_0px_#FF00FF] active:shadow-none transition-all">
+                   SIGNAL_HELP_DESK
                 </Button>
              </Card>
           </div>

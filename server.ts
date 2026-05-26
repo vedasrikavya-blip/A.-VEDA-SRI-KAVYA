@@ -4,7 +4,7 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import Busboy from "busboy";
 import { generateMeetingPdf } from "./src/lib/pdf-generator";
-import { generateFollowUpEmail } from "./src/lib/gemini";
+import { generateFollowUpEmail, analyzeMeetingNotes } from "./src/lib/gemini";
 import { Resend } from "resend";
 // @ts-ignore
 import * as pdfImport from "pdf-parse";
@@ -18,6 +18,32 @@ async function startServer() {
   const PORT = 3000;
 
   app.use(express.json());
+
+  // Request Logging
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+  });
+
+  // Health Check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  // API Route: Analyze Meeting Notes (Gemini)
+  app.post("/api/analyze-notes", async (req, res) => {
+    try {
+      const { text } = req.body;
+      if (!text) {
+        return res.status(400).json({ error: "Missing meeting notes text" });
+      }
+      const analysis = await analyzeMeetingNotes(text);
+      res.json(analysis);
+    } catch (error: any) {
+      console.error("Analysis Error:", error);
+      res.status(500).json({ error: error.message || "Failed to analyze notes" });
+    }
+  });
 
   // API Route: Document Parser
   app.post("/api/parse-document", (req, res) => {
@@ -128,6 +154,11 @@ async function startServer() {
       console.error("Email Sending Error:", error);
       res.status(500).json({ error: "Failed to send email" });
     }
+  });
+
+  // 404 handler for API routes
+  app.all("/api/*", (req, res) => {
+    res.status(404).json({ error: `API route ${req.method} ${req.path} not found` });
   });
 
   // Vite middleware for development

@@ -32,25 +32,27 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FCFCFB] font-sans text-slate-900 overflow-x-hidden selection:bg-amber-100 selection:text-amber-900">
+    <div className="min-h-screen bg-black font-sans text-cyan-400 overflow-x-hidden selection:bg-magenta-500 selection:text-white">
+      <div className="crt-scanline"></div>
+      
       {/* Navigation */}
-      <nav className="fixed top-0 z-50 w-full border-b border-slate-100 bg-white/80 backdrop-blur-xl">
+      <nav className="fixed top-0 z-50 w-full border-b border-zinc-800 bg-black/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-12">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-xl shadow-amber-200/50 group-hover:scale-110 transition-transform duration-300">
+            <div className="flex h-10 w-10 items-center justify-center border-2 border-cyan-400 bg-black text-cyan-400 shadow-[2px_2px_0px_#FF00FF] group-hover:scale-110 transition-transform duration-300">
               <Sparkles size={20} />
             </div>
-            <span className="text-xl font-extrabold tracking-tight text-slate-900">NoteGenius</span>
+            <span className="text-xl font-pixel tracking-widest text-cyan-400">NoteGenius_v3.0</span>
           </Link>
-          <div className="hidden items-center gap-10 lg:flex text-xs font-bold tracking-tight text-slate-500 uppercase">
-            <a href="#features" className="hover:text-amber-600 transition-colors">Capabilities</a>
-            <a href="#demo" className="hover:text-amber-600 transition-colors">Intelligence Demo</a>
-            <a href="#pricing" className="hover:text-amber-600 transition-colors">Pricing</a>
+          <div className="hidden items-center gap-10 lg:flex text-[10px] font-black tracking-[0.2em] text-zinc-500 uppercase">
+            <a href="#features" className="hover:text-magenta-500 transition-colors">{" >> "} Capabilities</a>
+            <a href="#demo" className="hover:text-magenta-500 transition-colors">{" >> "} Intel-Demo</a>
+            <a href="#pricing" className="hover:text-magenta-500 transition-colors">{" >> "} Credits</a>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="hidden sm:block text-sm font-semibold text-slate-500 hover:text-slate-900 px-4 transition-colors">Log In</Link>
-            <Button asChild className="rounded-2xl bg-slate-900 h-11 px-6 hover:bg-slate-800 shadow-xl shadow-slate-200/50 font-bold text-sm">
-              <Link to="/login">Try Free</Link>
+            <Link to="/login" className="hidden sm:block text-xs font-bold text-zinc-500 hover:text-cyan-400 px-4 transition-colors uppercase tracking-widest">[ Login ]</Link>
+            <Button asChild className="rounded-none border-2 border-cyan-400 bg-transparent text-cyan-400 hover:bg-cyan-400 hover:text-black font-pixel text-lg h-11 px-6 shadow-[4px_4px_0px_#FF00FF]">
+              <Link to="/login">Try_Free</Link>
             </Button>
           </div>
         </div>
@@ -58,34 +60,31 @@ export default function Landing() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden px-6">
-        {/* Background Gradients */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-[radial-gradient(circle_at_center,var(--color-primary)_0%,transparent_70%)] opacity-[0.03] blur-3xl -z-10" />
-
         <div className="mx-auto max-w-7xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-5 py-2 mb-8 shadow-sm">
-              <div className="mr-2 h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-600">Advanced Meeting Intelligence</span>
+            <div className="inline-flex items-center border border-cyan-900 bg-cyan-950/20 px-5 py-2 mb-8 shadow-[0_0_15px_rgba(0,255,255,0.1)]">
+              <div className="mr-2 h-2 w-2 bg-cyan-400 animate-pulse" />
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-500">System_Status: Operational</span>
             </div>
             
-            <h1 className="mx-auto max-w-[900px] text-[clamp(2.5rem,8vw,6.5rem)] font-extrabold tracking-[-0.04em] leading-[0.95] text-slate-930 text-balance">
-               Conversations to <span className="bg-gradient-to-r from-amber-500 to-orange-400 bg-clip-text text-transparent">Action</span> in seconds.
+            <h1 className="mx-auto max-w-[1000px] text-[clamp(2.5rem,8vw,5.5rem)] font-pixel tracking-widest leading-[0.95] text-cyan-400 uppercase glitch-text">
+               Conversations to <span className="text-magenta-500">Action</span>_Extracted.
             </h1>
 
-            <p className="mx-auto mt-8 max-w-2xl text-lg text-slate-500 md:text-xl leading-relaxed font-medium px-4">
-              Stop wandering through transcript graveyards. NoteGenius automates summaries, task identification, and stakeholder engagement.
+            <p className="mx-auto mt-8 max-w-2xl text-sm text-zinc-500 font-mono leading-relaxed px-4">
+              Stop wandering through transcript graveyards. NoteGenius_v3.0.0 automates summary synthesis, task identification, and stakeholder engagement protocols.
             </p>
 
-            <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row px-4">
-              <Button asChild size="lg" className="h-16 w-full sm:w-auto rounded-2xl bg-amber-500 px-10 text-base font-extrabold hover:bg-amber-600 shadow-2xl shadow-amber-200 transition-all hover:scale-[1.02] active:scale-95">
-                <Link to="/login">Start Analyzing Free <ArrowRight className="ml-2 h-5 w-5" /></Link>
+            <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row px-4">
+              <Button asChild size="lg" className="h-16 w-full sm:w-auto rounded-none bg-magenta-500 px-10 text-lg font-pixel uppercase hover:bg-magenta-600 shadow-[6px_6px_0px_#00FFFF] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 text-white">
+                <Link to="/login">Initialize_Analysis <ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-16 w-full sm:w-auto rounded-2xl bg-white px-10 text-base font-bold border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
-                <Play className="mr-2 h-4 w-4 text-amber-500" /> Watch Dashboard Demo
+              <Button size="lg" variant="outline" className="h-16 w-full sm:w-auto rounded-none bg-transparent border-2 border-cyan-400 text-cyan-400 px-10 text-lg font-pixel uppercase hover:bg-cyan-900/20 transition-all shadow-[6px_6px_0px_#FF00FF]">
+                <Play className="mr-2 h-4 w-4 text-magenta-500" /> Watch_Feed
               </Button>
             </div>
           </motion.div>
@@ -93,56 +92,50 @@ export default function Landing() {
           {/* AI Interactive Demo Section */}
           <section id="demo" className="mt-24 md:mt-32 max-w-5xl mx-auto px-4 md:px-0 scroll-mt-24">
              <motion.div 
-               initial={{ opacity: 0, scale: 0.95 }}
+               initial={{ opacity: 0, scale: 0.98 }}
                whileInView={{ opacity: 1, scale: 1 }}
                viewport={{ once: true }}
-               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-               className="rounded-[40px] border border-slate-100 bg-white p-4 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] relative overflow-hidden group"
+               className="rounded-none border-2 border-zinc-800 bg-zinc-950 p-1 shadow-[10px_10px_0px_#111] relative overflow-hidden"
              >
-                {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none">
-                  <Sparkles size={200} />
-                </div>
-
-                <div className="bg-slate-50 rounded-[32px] p-6 md:p-10">
+                <div className="bg-[#050505] border border-zinc-800 p-6 md:p-10">
                    <div className="grid lg:grid-cols-2 gap-10 items-start text-left">
                       <div className="space-y-6">
                          <div className="flex items-center gap-3">
-                           <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                           <div className="w-10 h-10 border border-cyan-400 text-cyan-400 flex items-center justify-center shadow-[2px_2px_0px_#FF00FF]">
                              <Upload size={18} />
                            </div>
-                           <h3 className="text-xl font-bold tracking-tight">Experience NoteGenius</h3>
+                           <h3 className="text-xl font-pixel tracking-widest uppercase">Input_Stream</h3>
                          </div>
                          
                          <div className="flex gap-4">
                            <Button 
                              onClick={() => toast.info("Transcription upload is active in the full dashboard")}
                              variant="outline" 
-                             className="flex-1 h-12 rounded-2xl border-slate-200 font-bold text-xs gap-2 bg-white"
+                             className="flex-1 rounded-none border border-zinc-800 font-pixel h-12 text-xs gap-2 bg-black hover:bg-zinc-900 text-cyan-600"
                            >
-                             <Upload size={14} className="text-amber-500" />
-                             Upload Transcript
+                             <Upload size={14} />
+                             UPLOAD_SRC
                            </Button>
                            <Button 
                              variant="ghost" 
-                             className="flex-1 h-12 rounded-2xl font-bold text-xs gap-2 hover:bg-slate-100"
+                             className="flex-1 rounded-none font-pixel h-12 text-xs gap-2 hover:bg-zinc-900 text-magenta-500"
                              onClick={() => setDemoTranscript("Sarah: Okay team, let's look at the Q4 roadmap. We're behind on backend tasks. \nMark: I can pull in some dev resources from the legacy team.\nSarah: Great, let's have that finalized by Friday.")}
                            >
-                             <FileText size={14} className="text-blue-500" />
-                             Use Sample Data
+                             <FileText size={14} />
+                             LOAD_SAMPLE
                            </Button>
                          </div>
                          
                          <div className="space-y-4">
                            <div className="relative">
                              <Textarea 
-                               placeholder="Paste your meeting notes or raw transcript here..." 
-                               className="min-h-[220px] rounded-[32px] border-none bg-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] p-8 text-sm font-medium leading-relaxed resize-none focus:ring-2 focus:ring-amber-200 transition-all placeholder:text-slate-300"
+                               placeholder="PASTE_MEETING_TRANSCRIPT_HERE..." 
+                               className="min-h-[220px] rounded-none border border-zinc-800 bg-black p-8 text-xs font-mono leading-relaxed resize-none focus:ring-1 focus:ring-cyan-400 transition-all placeholder:text-zinc-700 text-cyan-400"
                                value={demoTranscript}
                                onChange={(e) => setDemoTranscript(e.target.value)}
                              />
-                             <div className="absolute top-4 right-4 text-[10px] font-black text-slate-300 uppercase tracking-widest pointer-events-none">
-                               Transcript Node
+                             <div className="absolute top-4 right-4 text-[10px] font-black text-zinc-800 uppercase tracking-widest pointer-events-none">
+                               Buffer_Node_01
                              </div>
                            </div>
                          </div>
@@ -150,17 +143,17 @@ export default function Landing() {
                          <Button 
                            onClick={runDemo}
                            disabled={isDemoLoading || !demoTranscript.trim()}
-                           className="w-full h-14 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-base gap-3 shadow-xl shadow-amber-100 transition-all active:scale-95 disabled:grayscale disabled:opacity-50"
+                           className="w-full h-14 rounded-none bg-cyan-400 hover:bg-cyan-500 text-black font-pixel text-xl gap-3 shadow-[4px_4px_0px_#FF00FF] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                          >
                            {isDemoLoading ? (
                              <>
-                               <Loader2 className="animate-spin" size={20} />
-                               Synthesizing Intelligence...
+                               <Loader2 className="animate-spin text-black" size={20} />
+                               SYNTHESIZING...
                              </>
                            ) : (
                              <>
                                <Zap size={20} fill="currentColor" />
-                               Generate Intelligence Preview
+                               EXECUTE_ANALYSIS_PREVIEW
                              </>
                            )}
                          </Button>
@@ -174,13 +167,13 @@ export default function Landing() {
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
-                              className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-slate-200 rounded-[32px] bg-slate-50/50"
+                              className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 border border-zinc-800 border-dashed bg-black/50"
                             >
-                               <div className="w-20 h-20 rounded-full bg-white shadow-xl flex items-center justify-center mb-6 text-slate-200">
+                               <div className="w-20 h-20 border border-zinc-800 flex items-center justify-center mb-6 text-zinc-800">
                                  <FileText size={40} />
                                </div>
-                               <h4 className="text-slate-900 font-bold mb-2">Awaiting Data</h4>
-                               <p className="text-slate-400 text-sm max-w-xs">Input a transcript on the left to see NoteGenius extract magical insights.</p>
+                               <h4 className="text-zinc-500 font-pixel text-lg mb-2">AWAITING_INPUT</h4>
+                               <p className="text-zinc-700 text-xs font-mono max-w-xs">Initialize stream on the left to extract cryptic insights.</p>
                             </motion.div>
                           ) : (
                             <motion.div 
@@ -189,32 +182,32 @@ export default function Landing() {
                               animate={{ opacity: 1, x: 0 }}
                               className="space-y-6"
                             >
-                               <div className="bg-white p-8 rounded-[32px] shadow-xl shadow-slate-200/30 border border-slate-100">
-                                  <div className="flex items-center gap-2 text-amber-500 mb-4 font-black text-[10px] uppercase tracking-widest">
-                                    <Sparkles size={14} />
-                                    AI Executive Summary
+                               <div className="bg-black p-8 border border-zinc-800 shadow-[4px_4px_0px_#111]">
+                                  <div className="flex items-center gap-2 text-cyan-400 mb-4 font-pixel text-xs tracking-widest uppercase">
+                                    <Sparkles size={14} className="text-magenta-500" />
+                                    Executive_Summary
                                   </div>
-                                  <p className="text-slate-600 text-sm leading-relaxed font-bold italic">
-                                    "{demoResult.summary}"
+                                  <p className="text-cyan-600 text-xs font-mono leading-relaxed italic">
+                                    {" >> "} "{demoResult.summary}"
                                   </p>
                                </div>
 
-                               <div className="bg-white p-8 rounded-[32px] shadow-xl shadow-slate-200/30 border border-slate-100">
-                                  <div className="flex items-center gap-2 text-blue-500 mb-4 font-black text-[10px] uppercase tracking-widest">
+                               <div className="bg-black p-8 border border-zinc-800 shadow-[4px_4px_0px_#111]">
+                                  <div className="flex items-center gap-2 text-magenta-500 mb-4 font-pixel text-xs tracking-widest uppercase">
                                     <ListChecks size={14} />
-                                    Detected Action Items
+                                    Action_Item_Matrix
                                   </div>
                                   <ul className="space-y-4">
                                      {demoResult.actions.map((action, i) => (
                                        <motion.li 
-                                         initial={{ opacity: 0, y: 10 }}
-                                         animate={{ opacity: 1, y: 0 }}
+                                         initial={{ opacity: 0, x: -10 }}
+                                         animate={{ opacity: 1, x: 0 }}
                                          transition={{ delay: i * 0.1 }}
                                          key={i} 
-                                         className="flex items-center gap-3 text-sm font-bold text-slate-800"
+                                         className="flex items-center gap-3 text-xs font-mono text-cyan-600"
                                        >
-                                         <div className="h-5 w-5 rounded-md bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
-                                            <CheckCircle2 size={12} />
+                                         <div className="h-4 w-4 border border-cyan-900 bg-zinc-950 flex items-center justify-center text-cyan-400 shrink-0">
+                                            <div className="w-1.5 h-1.5 bg-cyan-400" />
                                          </div>
                                          {action}
                                        </motion.li>
@@ -223,13 +216,13 @@ export default function Landing() {
                                </div>
 
                                <div className="grid grid-cols-2 gap-4">
-                                 <div className="p-5 rounded-2xl bg-green-50 border border-green-100 flex items-center gap-3">
-                                   <div className="w-8 h-8 rounded-lg bg-green-500 text-white flex items-center justify-center"><Mail size={16}/></div>
-                                   <div className="text-[10px] font-black uppercase text-green-700">Email Draft Ready</div>
+                                 <div className="p-4 border border-zinc-900 bg-black/40 flex items-center gap-3">
+                                   <div className="w-8 h-8 bg-zinc-900 text-cyan-400 flex items-center justify-center"><Mail size={16}/></div>
+                                   <div className="text-[10px] font-pixel uppercase text-zinc-500">EMAIL_GEN_OK</div>
                                  </div>
-                                 <div className="p-5 rounded-2xl bg-amber-50 border border-amber-100 flex items-center gap-3">
-                                   <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center"><Zap size={16}/></div>
-                                   <div className="text-[10px] font-black uppercase text-amber-700">Owners Assigned</div>
+                                 <div className="p-4 border border-zinc-900 bg-black/40 flex items-center gap-3">
+                                   <div className="w-8 h-8 bg-zinc-900 text-magenta-500 flex items-center justify-center"><Zap size={16}/></div>
+                                   <div className="text-[10px] font-pixel uppercase text-zinc-500">SRC_IDENT_OK</div>
                                  </div>
                                </div>
                             </motion.div>

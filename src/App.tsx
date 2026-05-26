@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import MeetingDetail from "./pages/MeetingDetail";
 import History from "./pages/History";
 import Insights from "./pages/Insights";
+import Transmissions from "./pages/Transmissions";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import { Toaster } from "./components/ui/sonner";
@@ -46,6 +47,10 @@ export default function App() {
         <Route 
           path="/insights" 
           element={user ? <Insights /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/transmissions" 
+          element={user ? <Transmissions /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/settings" 

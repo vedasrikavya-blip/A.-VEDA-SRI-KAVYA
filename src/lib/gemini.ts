@@ -1,37 +1,24 @@
 import { GoogleGenAI, Type } from "@google/genai";
+import { MeetingAnalysis, EmailAnalysis } from "../types";
 
 let aiInstance: GoogleGenAI | null = null;
-
-function getAI() {
+ 
+ function getAI() {
   if (!aiInstance) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY environment variable is required");
     }
-    aiInstance = new GoogleGenAI({ apiKey });
+    aiInstance = new GoogleGenAI({ 
+      apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        }
+      }
+    });
   }
   return aiInstance;
-}
-
-export interface ActionItem {
-  task: string;
-  owner: string;
-  deadline: string;
-  priority: "low" | "medium" | "high";
-}
-
-export interface MeetingAnalysis {
-  summary: string;
-  key_points: string[];
-  action_items: ActionItem[];
-  follow_up_email: string;
-  sentiment: string;
-  meeting_topics: string[];
-}
-
-export interface EmailAnalysis {
-  subject: string;
-  body: string;
 }
 
 export async function generateFollowUpEmail(meetingData: any): Promise<EmailAnalysis> {

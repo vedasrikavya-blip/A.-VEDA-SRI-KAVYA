@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth, db, handleFirestoreError, OperationType } from "../lib/firebase";
 import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, doc, setDoc } from "firebase/firestore";
-import { analyzeMeetingNotes, MeetingAnalysis } from "../lib/gemini";
+import { MeetingAnalysis } from "../types";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
@@ -10,7 +10,8 @@ import { Textarea } from "../components/ui/textarea";
 import { Badge } from "../components/ui/badge";
 import { 
   FileText, Plus, Search, ChevronRight, Upload, Loader2, Sparkles, 
-  Calendar, CheckCircle2, Clock, Zap, History as HistoryIcon
+  Calendar, CheckCircle2, Clock, Zap, History as HistoryIcon,
+  Users, Brain, Terminal, User, Mail
 } from "lucide-react";
 import { Sidebar } from "../components/Sidebar";
 import { Link, useNavigate } from "react-router-dom";
@@ -67,12 +68,34 @@ export default function Dashboard() {
           method: "POST",
           body: formData,
         });
+        
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+           const text = await res.text();
+           console.error("Unexpected response from parse-document:", text);
+           throw new Error("Server communication error (Expected JSON, received HTML)");
+        }
+        
         const data = await res.json();
         if (data.error) throw new Error(data.error);
         textToProcess = data.text;
       }
 
-      const analysis = await analyzeMeetingNotes(textToProcess);
+      const analysisRes = await fetch("/api/analyze-notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: textToProcess }),
+      });
+
+      const analysisContentType = analysisRes.headers.get("content-type");
+      if (!analysisContentType || !analysisContentType.includes("application/json")) {
+        const text = await analysisRes.text();
+        console.error("Unexpected response from analyze-notes:", text);
+        throw new Error("Analysis failed: Server returned non-JSON response");
+      }
+
+      const analysis: MeetingAnalysis = await analysisRes.json();
+      if ((analysis as any).error) throw new Error((analysis as any).error);
       
       const meetingRef = await addDoc(collection(db, "meetings"), {
         userId: auth.currentUser?.uid,
@@ -111,96 +134,97 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FBFBFA]">
+    <div className="flex min-h-screen bg-black font-sans text-cyan-400">
+      <div className="crt-scanline"></div>
       <Sidebar docCount={meetings.length} />
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <header className="flex justify-between items-center mb-8">
+      <main className="flex-1 p-8 overflow-y-auto relative">
+        <header className="flex justify-between items-center mb-12">
            <div className="relative group">
               <input 
                 type="text" 
-                placeholder="Search workspace..." 
-                className="bg-white border border-gray-100 rounded-full py-2 px-5 text-sm w-72 focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/10 shadow-sm transition-all"
+                placeholder="PROBE_WORKSPACE..." 
+                className="bg-black border-2 border-zinc-800 rounded-none py-2 px-5 text-xs w-72 focus:outline-none focus:border-cyan-400 font-mono transition-all text-cyan-400 shadow-[2px_2px_0px_#111]"
               />
-              <Search className="absolute right-4 top-2.5 h-4 w-4 text-gray-300 group-focus-within:text-amber-500 transition-colors" />
+              <Search className="absolute right-4 top-2.5 h-4 w-4 text-zinc-700 group-focus-within:text-cyan-400 transition-colors" />
            </div>
            <div className="flex gap-4">
-              <Button onClick={processNotes} className="bg-[#F59E0B] text-white px-6 h-11 rounded-xl text-sm font-bold shadow-sm hover:bg-[#D97706] transition-all">
-                <Plus className="mr-2 h-5 w-5" /> New Upload
+              <Button onClick={processNotes} className="bg-transparent border-2 border-magenta-500 text-magenta-500 px-6 h-11 rounded-none text-xs font-pixel tracking-widest shadow-[4px_4px_0px_#00FFFF] hover:bg-magenta-500 hover:text-white transition-all">
+                <Plus className="mr-2 h-4 w-4" /> NEW_INGEST
               </Button>
            </div>
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
-           <StatCard label="Documents" value={meetings.length} />
-           <StatCard label="Tasks Extracted" value={meetings.reduce((acc, m) => acc + (m.taskCount || 0), 0) || "0"} />
-           <StatCard label="Time Saved" value="42h" />
-           <StatCard label="Accuracy" value="98%" />
+        <div className="grid grid-cols-4 gap-6 mb-12">
+           <StatCard label="Binary_Assets" value={meetings.length} />
+           <StatCard label="Tasks_Extracted" value={meetings.reduce((acc, m) => acc + (m.taskCount || 0), 0) || "0"} />
+           <StatCard label="Temporal_Gain" value="42h" />
+           <StatCard label="Engine_Precision" value="98%" />
         </div>
 
-        <section className="grid grid-cols-12 gap-8">
+        <section className="grid grid-cols-12 gap-10">
            {/* Left Column: Create New Intelligence */}
            <div className="col-span-12 lg:col-span-12">
-              <Card className="border-none shadow-xl shadow-slate-200/50 rounded-[32px] overflow-hidden">
-                <CardHeader className="bg-white border-b border-slate-50 p-8">
+              <Card className="rounded-none border-2 border-zinc-800 bg-zinc-950 p-1 shadow-[10px_10px_0px_#111]">
+                <CardHeader className="bg-black border-b border-zinc-800 p-8">
                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl font-bold flex items-center gap-2">
-                        <Sparkles className="text-amber-500 h-5 w-5" /> Generate Intelligence
+                      <CardTitle className="text-2xl font-pixel tracking-widest uppercase flex items-center gap-3">
+                        <Sparkles className="text-magenta-500 h-6 w-6 glitch-text" /> Neural_Synthesis_v3
                       </CardTitle>
-                      <Badge variant="outline" className="rounded-full bg-amber-50 text-amber-600 border-amber-100">AI Engine Active</Badge>
+                      <Badge variant="outline" className="rounded-none border-cyan-900 bg-cyan-950/20 text-cyan-400 font-mono text-[10px] uppercase px-3 py-1">System_Status: Operational</Badge>
                    </div>
-                   <CardDescription>Upload a transcript or paste notes to extract action items and summaries.</CardDescription>
+                   <CardDescription className="text-zinc-500 font-mono text-[10px] uppercase tracking-widest mt-2 px-1">Convert raw conversational streams into actionable protocol data.</CardDescription>
                 </CardHeader>
-                <CardContent className="p-8">
-                  <div className="space-y-6">
+                <CardContent className="p-8 bg-black">
+                  <div className="space-y-10">
                     <div className="space-y-2">
-                       <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Meeting Title</label>
+                       <label className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 px-1">Protocol_Identifier</label>
                        <Input 
-                        placeholder="e.g. Q3 Strategic Planning" 
+                        placeholder="E.G. PROJECT_CYBERPUNK_SYNC" 
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="rounded-xl h-12 border-slate-200 bg-slate-50/50"
+                        className="rounded-none h-14 border-2 border-zinc-900 bg-zinc-950 focus:border-cyan-400 font-mono text-cyan-400 placeholder:text-zinc-800"
                        />
                     </div>
 
                     <Tabs defaultValue="upload" className="w-full">
-                       <TabsList className="grid w-full grid-cols-2 rounded-2xl bg-slate-100/50 p-1 mb-6">
-                          <TabsTrigger value="upload" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm">Upload File</TabsTrigger>
-                          <TabsTrigger value="paste" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm">Paste Content</TabsTrigger>
+                       <TabsList className="grid w-full grid-cols-2 rounded-none bg-zinc-900 p-1 mb-8 border border-zinc-800">
+                          <TabsTrigger value="upload" className="rounded-none font-pixel text-sm uppercase data-[state=active]:bg-cyan-400 data-[state=active]:text-black">{" >> "} SOURCE_FILE</TabsTrigger>
+                          <TabsTrigger value="paste" className="rounded-none font-pixel text-sm uppercase data-[state=active]:bg-magenta-500 data-[state=active]:text-white">{" >> "} DATA_STREAM</TabsTrigger>
                        </TabsList>
                        
-                       <TabsContent value="upload">
+                       <TabsContent value="upload" className="focus-visible:outline-none">
                           <div 
-                            className={`border-2 border-dashed rounded-3xl p-12 text-center transition-all ${file ? 'border-amber-500 bg-amber-50/20' : 'border-slate-200 hover:border-amber-300 bg-slate-50/50'}`}
+                            className={`border-2 border-dashed rounded-none p-16 text-center transition-all ${file ? 'border-cyan-400 bg-cyan-950/10' : 'border-zinc-800 hover:border-cyan-900 bg-zinc-950'}`}
                           >
-                             <div className="flex flex-col items-center gap-4">
-                               <div className="h-16 w-16 rounded-2xl bg-white shadow-md flex items-center justify-center text-slate-400">
-                                  {file ? <FileText className="text-amber-500 h-8 w-8" /> : <Upload className="h-8 w-8" />}
+                             <div className="flex flex-col items-center gap-6">
+                               <div className="h-20 w-20 border-2 border-zinc-800 bg-black flex items-center justify-center text-zinc-700 shadow-[4px_4px_0px_#111] group-hover:border-cyan-400 group-hover:text-cyan-400">
+                                  {file ? <FileText className="text-cyan-400 h-10 w-10" /> : <Upload className="h-10 w-10" />}
                                </div>
                                <div>
-                                  <p className="font-bold text-slate-900">{file ? file.name : "Select a document"}</p>
-                                  <p className="text-xs text-slate-400 mt-1">PDF, Word, or TXT up to 20MB</p>
+                                  <p className="font-pixel text-xl tracking-widest text-cyan-400 uppercase">{file ? file.name : "LOAD_DOCUMENT"}</p>
+                                  <p className="font-mono text-[10px] text-zinc-600 mt-2 uppercase">PDF, DOCX, TXT | MAX_SIZE: 20MB</p>
                                </div>
                                <input 
-                                type="file" 
-                                id="file-upload" 
-                                className="hidden" 
-                                accept=".pdf,.docx,.txt,.md"
-                                onChange={handleFileUpload}
+                                 type="file" 
+                                 id="file-upload" 
+                                 className="hidden" 
+                                 accept=".pdf,.docx,.txt,.md"
+                                 onChange={handleFileUpload}
                                />
-                               <Button variant="outline" asChild className="rounded-full h-11 px-8 font-bold border-slate-200 bg-white">
-                                  <label htmlFor="file-upload" className="cursor-pointer">{file ? "Change File" : "Browse Files"}</label>
+                               <Button variant="outline" asChild className="rounded-none border-2 border-cyan-400 bg-transparent text-cyan-400 font-pixel uppercase hover:bg-cyan-400 hover:text-black shadow-[4px_4px_0px_#FF00FF] transition-all">
+                                  <label htmlFor="file-upload" className="cursor-pointer px-10 h-12 flex items-center">{file ? "OVERWRITE_SOURCE" : "SELECT_FILE"}</label>
                                </Button>
                              </div>
                           </div>
                        </TabsContent>
 
-                       <TabsContent value="paste">
+                       <TabsContent value="paste" className="focus-visible:outline-none">
                           <Textarea 
-                            placeholder="Paste meeting transcript or raw notes here..."
-                            className="min-h-[220px] rounded-3xl border-slate-200 bg-slate-50/50 p-6 focus:ring-amber-500"
+                            placeholder="PASTE_RAW_TRANSCRIPT_CODE_HERE..."
+                            className="min-h-[250px] rounded-none border-2 border-zinc-800 bg-black p-8 text-xs font-mono leading-relaxed resize-none focus:border-magenta-500 text-magenta-500 placeholder:text-zinc-900"
                             value={pastedText}
                             onChange={(e) => setPastedText(e.target.value)}
                           />
@@ -210,16 +234,16 @@ export default function Dashboard() {
                     <Button 
                       onClick={processNotes} 
                       disabled={isAnalyzing || (!file && !pastedText)}
-                      className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-black text-white font-bold text-lg shadow-xl shadow-slate-200"
+                      className="w-full h-16 rounded-none bg-cyan-400 hover:bg-cyan-500 text-black font-pixel text-2xl uppercase shadow-[6px_6px_0px_#FF00FF] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0"
                     >
                       {isAnalyzing ? (
                         <>
-                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                          Processing Intelligence...
+                          <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                          DECODING_INTELLIGENCE...
                         </>
                       ) : (
                         <>
-                          Extract Intelligence <Sparkles className="ml-2 h-5 w-5" />
+                          EXECUTE_SYNTHESIS <Sparkles className="ml-3 h-6 w-6" />
                         </>
                       )}
                     </Button>
@@ -229,28 +253,29 @@ export default function Dashboard() {
            </div>
 
            {/* Recent Intelligence */}
-           <div className="col-span-12 mt-8">
-              <div className="flex items-center justify-between mb-6">
-                 <h2 className="text-xl font-bold">Recent Intelligence</h2>
-                 <Link to="/history" className="text-xs font-bold text-amber-600 hover:underline">View all history</Link>
+           <div className="col-span-12 mt-12">
+              <div className="flex items-center justify-between mb-8 border-b-2 border-zinc-900 pb-4">
+                 <h2 className="text-2xl font-pixel uppercase tracking-widest text-white glitch-text">Memory_Bank</h2>
+                 <Link to="/history" className="text-[10px] font-black text-cyan-600 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">[ View_Access_Logs ]</Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                  <AnimatePresence mode="popLayout">
                     {meetings.length === 0 && !loadingTasks && (
-                      <div className="col-span-full py-20 text-center bg-white rounded-[32px] border border-dashed border-slate-200">
-                         <div className="h-16 w-16 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 mx-auto mb-4">
-                            <HistoryIcon size={32} />
+                      <div className="col-span-full py-24 text-center border-2 border-dashed border-zinc-800 bg-zinc-950/20">
+                         <div className="h-20 w-20 border border-zinc-800 flex items-center justify-center text-zinc-800 mx-auto mb-6">
+                            <HistoryIcon size={40} />
                          </div>
-                         <p className="text-slate-400 font-medium">No meetings processed yet.</p>
+                         <p className="text-zinc-600 font-pixel text-xl uppercase tracking-widest">Database_Empty</p>
                       </div>
                     )}
                     {meetings.slice(0, 6).map((m, idx) => (
                        <motion.div
                         key={m.id}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.1 }}
+                        className="h-full"
                        >
                          <IntelligenceCard meeting={m} />
                        </motion.div>
@@ -266,38 +291,44 @@ export default function Dashboard() {
 
 function StatCard({ label, value }: { label: string, value: string | number }) {
    return (
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
-         <div className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">{label}</div>
-         <div className="text-3xl font-black text-gray-900 tracking-tighter">{value}</div>
+      <div className="bg-zinc-950 border-2 border-zinc-900 p-6 shadow-[4px_4px_0px_#111] hover:border-zinc-700 transition-all group">
+         <div className="text-zinc-700 text-[9px] font-mono uppercase tracking-[0.3em] mb-3 group-hover:text-magenta-500 transition-colors">{" >> "} {label}</div>
+         <div className="text-4xl font-pixel text-cyan-400 tracking-wider glitch-text">{value}</div>
       </div>
    );
 }
 
 function IntelligenceCard({ meeting }: { meeting: any }) {
    return (
-      <Link to={`/meeting/${meeting.id}`}>
-        <Card className="group border-none shadow-sm shadow-slate-100 rounded-3xl p-6 bg-white hover:shadow-xl hover:shadow-amber-50 transition-all cursor-pointer">
-           <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{format(new Date(meeting.createdAt), 'MMM dd, yyyy')}</span>
-              <div className="h-2 w-2 rounded-full bg-green-500" />
+      <Link to={`/meeting/${meeting.id}`} className="h-full block">
+        <Card className="group border-2 border-zinc-900 bg-zinc-950 h-full rounded-none p-8 hover:border-cyan-400 transition-all cursor-pointer relative overflow-hidden shadow-[6px_6px_0px_#000]">
+           <div className="flex items-center justify-between mb-6">
+              <span className="text-[9px] font-mono text-zinc-700 uppercase tracking-widest">{format(new Date(meeting.createdAt), 'yyyy.MM.dd | HH:mm')}</span>
+              <div className="h-2 w-2 bg-cyan-400 animate-pulse" />
            </div>
-           <h3 className="font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">{meeting.title}</h3>
-           <p className="text-xs text-slate-500 line-clamp-2 mb-6 leading-relaxed bg-slate-50 p-2 rounded-lg">{meeting.summary}</p>
+           <h3 className="text-xl font-pixel uppercase tracking-widest text-cyan-400 mb-4 group-hover:text-magenta-500 transition-colors leading-tight line-clamp-2">{meeting.title}</h3>
+           <p className="text-[10px] text-zinc-500 font-mono line-clamp-3 mb-8 leading-relaxed border-l-2 border-zinc-900 pl-4 bg-zinc-900/10 py-2">{meeting.summary}</p>
            
-           <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-              <div className="flex -space-x-2">
+           <div className="flex items-center justify-between mb-2">
+             <div className="flex items-center gap-1.5 grayscale group-hover:grayscale-0 transition-all">
+                <Mail size={12} className={meeting.followUpEmail ? "text-magenta-500" : "text-zinc-800"} />
+                <span className="text-[8px] font-mono text-zinc-700 uppercase tracking-tighter">Draft: {meeting.followUpEmail ? "READY" : "NONE"}</span>
+             </div>
+           </div>
+
+           <div className="flex items-center justify-between pt-6 border-t border-zinc-900 mt-auto">
+              <div className="flex items-center gap-1.5">
                  {[1,2,3].slice(0, meeting.topics?.length || 0).map(t => (
-                    <div key={t} className="h-6 w-6 rounded-full bg-amber-100 border-2 border-white flex items-center justify-center text-[8px] font-bold text-amber-600">
-                       AI
-                    </div>
+                    <div key={t} className="h-3 w-3 bg-cyan-900/50 border border-cyan-400 shadow-[1px_1px_0px_#FF00FF]"></div>
                  ))}
                  {(meeting.topics?.length || 0) > 3 && (
-                    <div className="h-6 w-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[8px] font-bold text-slate-400">
-                       +{meeting.topics.length - 3}
-                    </div>
+                    <div className="text-[8px] font-black text-cyan-900 ml-1">+{meeting.topics.length - 3}</div>
                  )}
               </div>
-              <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
+              <div className="flex items-center gap-2 text-zinc-700 group-hover:text-cyan-400 transition-colors">
+                <span className="text-[10px] font-pixel uppercase tracking-widest">ACCESS</span>
+                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </div>
            </div>
         </Card>
       </Link>

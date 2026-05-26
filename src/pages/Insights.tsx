@@ -62,63 +62,64 @@ export default function Insights() {
   const COLORS = ['#F59E0B', '#FCD34D', '#FEF3C7'];
 
   return (
-    <div className="flex min-h-screen bg-[#FBFBFA]">
+    <div className="flex min-h-screen bg-black font-sans text-cyan-400">
+      <div className="crt-scanline"></div>
       <Sidebar docCount={stats.totalMeetings} />
       
-      <main className="flex-1 p-10 overflow-y-auto">
-        <header className="mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">Workspace Insights</h1>
-          <p className="text-sm text-gray-500 font-medium">Visual intelligence and productivity analytics.</p>
+      <main className="flex-1 p-10 overflow-y-auto relative">
+        <header className="mb-12">
+          <h1 className="text-3xl font-pixel uppercase tracking-widest text-white glitch-text mb-3">Core_Intelligence</h1>
+          <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-[0.2em]">Visual analytics and neural throughput monitoring.</p>
         </header>
 
-        <div className="grid grid-cols-4 gap-6 mb-10">
-          <StatCard label="Total Documents" value={stats.totalMeetings} icon={<FileText size={20} />} color="bg-blue-50 text-blue-600" />
-          <StatCard label="Tasks Extracted" value={stats.totalTasks} icon={<Brain size={20} />} color="bg-amber-50 text-amber-600" />
-          <StatCard label="Task Completion" value={`${Math.round((stats.completedTasks/stats.totalTasks) * 100 || 0)}%`} icon={<CheckCircle2 size={20} />} color="bg-green-50 text-green-600" />
-          <StatCard label="AI Confidence" value={`${stats.avgSentiment}%`} icon={<Zap size={20} />} color="bg-purple-50 text-purple-600" />
+        <div className="grid grid-cols-4 gap-6 mb-12">
+          <StatCard label="DATA_NODES" value={stats.totalMeetings} icon={<FileText size={20} />} color="border-zinc-800 text-zinc-500" />
+          <StatCard label="ACTION_STRINGS" value={stats.totalTasks} icon={<Brain size={20} />} color="border-cyan-400 text-cyan-400" />
+          <StatCard label="SYNTAX_COMPLETE" value={`${Math.round((stats.completedTasks/stats.totalTasks) * 100 || 0)}%`} icon={<CheckCircle2 size={20} />} color="border-magenta-500 text-magenta-500" />
+          <StatCard label="NEURAL_CONFIDENCE" value={`${stats.avgSentiment}%`} icon={<Zap size={20} />} color="border-zinc-700 text-white" />
         </div>
 
-        <div className="grid grid-cols-3 gap-8">
-          <Card className="col-span-2 border-none shadow-sm shadow-slate-100 rounded-3xl p-6 bg-white">
-            <CardHeader className="p-0 mb-6">
+        <div className="grid grid-cols-3 gap-10">
+          <Card className="col-span-2 rounded-none border-2 border-zinc-900 bg-zinc-950 p-6 shadow-[10px_10px_0px_#000]">
+            <CardHeader className="p-0 mb-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg font-bold">Analysis Frequency</CardTitle>
-                  <p className="text-xs text-slate-400 font-medium">Daily AI document processing volume</p>
+                  <CardTitle className="text-xl font-pixel uppercase tracking-widest text-white">Throughput_History</CardTitle>
+                  <p className="text-[10px] text-zinc-600 font-mono uppercase mt-2 tracking-tighter">Daily Signal processing volume metric</p>
                 </div>
-                <div className="flex items-center gap-1 text-green-500 font-bold text-xs bg-green-50 px-2 py-1 rounded-lg">
-                  <TrendingUp size={12} /> +12%
+                <div className="flex items-center gap-2 text-cyan-400 font-mono text-[10px] bg-cyan-950/20 border border-cyan-900 px-3 py-1 uppercase">
+                  <TrendingUp size={12} /> +12%_SYNTH
                 </div>
               </div>
             </CardHeader>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#111" />
                   <XAxis 
                     dataKey="name" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
+                    tick={{ fill: '#333', fontSize: 10, fontFamily: 'monospace' }}
                     dy={10}
                   />
                   <YAxis hide />
                   <Tooltip 
-                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                    cursor={{ fill: '#f8fafc' }}
+                    contentStyle={{ backgroundColor: '#000', border: '1px solid #333', color: '#00FFFF', fontFamily: 'monospace' }}
+                    cursor={{ fill: '#050505' }}
                   />
-                  <Bar dataKey="count" fill="#F59E0B" radius={[6, 6, 0, 0]} barSize={40} />
+                  <Bar dataKey="count" fill="#00FFFF" radius={[0, 0, 0, 0]} barSize={25} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </Card>
 
-          <Card className="border-none shadow-sm shadow-slate-100 rounded-3xl p-6 bg-white overflow-hidden relative">
-            <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-lg font-bold">Priority Distribution</CardTitle>
-              <p className="text-xs text-slate-400 font-medium">Extracted task weight class</p>
+          <Card className="rounded-none border-2 border-zinc-900 bg-zinc-950 p-6 shadow-[10px_10px_0px_#000] overflow-hidden relative">
+            <CardHeader className="p-0 mb-8">
+              <CardTitle className="text-xl font-pixel uppercase tracking-widest text-white">Class_Weights</CardTitle>
+              <p className="text-[10px] text-zinc-600 font-mono uppercase mt-2 tracking-tighter">Task importance distribution</p>
             </CardHeader>
-            <div className="h-[200px] mt-4 relative">
+            <div className="h-[220px] relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -126,30 +127,32 @@ export default function Insights() {
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
+                    outerRadius={85}
+                    paddingAngle={2}
                     dataKey="value"
+                    stroke="#000"
+                    strokeWidth={2}
                   >
                     {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={`cell-${index}`} fill={['#00FFFF', '#FF00FF', '#333'][index % 3]} />
                     ))}
                   </Pie>
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-x-0 bottom-0 top-[60px] pointer-events-none flex items-center justify-center flex-col">
-                <span className="text-2xl font-bold text-slate-900 leading-none">Task</span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Weights</span>
+                <span className="text-2xl font-pixel text-white leading-none uppercase tracking-widest">DATA</span>
+                <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-[0.2em] mt-1">Matrix</span>
               </div>
             </div>
-            <div className="space-y-3 mt-8">
+            <div className="space-y-4 mt-10">
                {pieData.map((p, i) => (
-                 <div key={p.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i] }} />
-                       <span className="text-xs font-bold text-slate-600">{p.name} Priority</span>
+                 <div key={p.name} className="flex items-center justify-between font-mono">
+                    <div className="flex items-center gap-3">
+                       <div className="w-3 h-3 border border-zinc-800" style={{ backgroundColor: ['#00FFFF', '#FF00FF', '#333'][i % 3] }} />
+                       <span className="text-[10px] uppercase text-zinc-500 tracking-tight">{p.name}_SIGNAL</span>
                     </div>
-                    <span className="text-xs font-bold text-slate-400">{p.value}%</span>
+                    <span className="text-[10px] text-zinc-700">{p.value}%</span>
                  </div>
                ))}
             </div>
@@ -157,13 +160,14 @@ export default function Insights() {
         </div>
 
         {/* Bottom Metrics */}
-        <div className="grid grid-cols-3 gap-6 mt-10">
-           <ActivityMetric icon={<Clock size={16} />} label="Response Time" value="1.2s" sub="AI Latency" />
-           <ActivityMetric icon={<Activity size={16} />} label="Throughput" value="12mb/m" sub="Network speed" />
-           <ActivityMetric icon={<Brain size={16} />} label="NLP Model" value="Gemini 1.5" sub="Core Engine" />
+        <div className="grid grid-cols-3 gap-8 mt-12">
+           <ActivityMetric icon={<Clock size={16} />} label="Signal_Latency" value="1.2ms" sub="REAL_TIME" />
+           <ActivityMetric icon={<Activity size={16} />} label="Packet_Depth" value="128kb/s" sub="UPLINK" />
+           <ActivityMetric icon={<Brain size={16} />} label="Core_Driver" value="X-01_GEN" sub="GEMINI_OS" />
         </div>
       </main>
     </div>
+
   );
 }
 

@@ -7,7 +7,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { 
   Search, Filter, Trash2, Download, 
-  ExternalLink, Calendar, ArrowUpDown 
+  ExternalLink, Calendar, ArrowUpDown, Terminal
 } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
@@ -38,77 +38,82 @@ export default function History() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#FBFBFA]">
+    <div className="flex min-h-screen bg-black font-sans text-cyan-400">
+      <div className="crt-scanline"></div>
       <Sidebar docCount={meetings.length} />
       
-      <main className="flex-1 p-10 overflow-y-auto">
-        <header className="flex items-center justify-between mb-10">
+      <main className="flex-1 p-10 overflow-y-auto relative">
+        <header className="flex items-center justify-between mb-12">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">Meeting History</h1>
-            <p className="text-sm text-gray-500 font-medium">Manage and review your past AI-analyzed meetings.</p>
+            <h1 className="text-3xl font-pixel uppercase tracking-widest text-white glitch-text mb-3">Archive_Logs</h1>
+            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-[0.2em]">{meetings.length} NODES_RECOVERED_SINCE_ORIGIN</p>
           </div>
           <div className="flex items-center gap-3">
-             <Button variant="outline" className="rounded-xl h-10 border-slate-200">
-               <Download className="w-4 h-4 mr-2" /> Export All
+             <Button variant="outline" className="rounded-none h-10 border-2 border-zinc-800 bg-transparent text-zinc-500 hover:text-cyan-400 hover:border-cyan-400 font-pixel text-[10px] uppercase shadow-[3px_3px_0px_#000]">
+               <Download className="w-4 h-4 mr-3" /> EXPORT_DEED
              </Button>
           </div>
         </header>
 
         {/* Filters */}
-        <div className="flex gap-4 mb-8">
+        <div className="flex gap-4 mb-10">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-800" />
             <Input 
-              placeholder="Search meetings, summaries..." 
-              className="pl-11 h-12 bg-white border-slate-100 rounded-2xl shadow-sm focus:ring-amber-500 focus:border-amber-500"
+              placeholder="SEARCH_BINARY_STRINGS..." 
+              className="pl-12 h-14 bg-black border-2 border-zinc-900 rounded-none focus:border-cyan-400 font-mono text-cyan-400 placeholder:text-zinc-900"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <Button 
             variant="outline" 
-            className="h-12 px-6 rounded-2xl border-slate-100 bg-white shadow-sm flex items-center gap-2 font-bold text-sm text-slate-700"
+            className="h-14 px-8 rounded-none border-2 border-zinc-900 bg-zinc-950 shadow-[4px_4px_0px_#000] flex items-center gap-3 font-pixel text-xs text-zinc-500 hover:text-white hover:border-zinc-700 transition-all uppercase tracking-widest"
             onClick={() => setSortBy(sortBy === "newest" ? "oldest" : "newest")}
           >
             <ArrowUpDown className="w-4 h-4" />
-            {sortBy === "newest" ? "Newest First" : "Oldest First"}
+            SORT: {sortBy.toUpperCase()}
           </Button>
-          <Button variant="outline" className="h-12 w-12 p-0 rounded-2xl border-slate-100 bg-white shadow-sm">
-            <Filter className="w-4 h-4 text-slate-600" />
+          <Button variant="outline" className="h-14 w-14 p-0 rounded-none border-2 border-zinc-900 bg-black hover:border-magenta-500 hover:text-magenta-500">
+            <Filter className="w-4 h-4" />
           </Button>
         </div>
 
         {/* History Table/List */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {filteredMeetings.map((meeting, index) => (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
               key={meeting.id}
             >
-              <Card className="p-5 border-none shadow-sm shadow-slate-100 hover:shadow-md transition-shadow group flex items-center gap-6">
-                <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-amber-100 transition-colors">
-                  <Calendar className="w-5 h-5 text-amber-600" />
+              <Card className="p-6 border-2 border-zinc-900 bg-zinc-950 rounded-none shadow-[6px_6px_0px_#000] hover:border-cyan-400 transition-all group flex items-center gap-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-2 opacity-5 pointer-events-none">
+                  <Terminal size={32} />
+                </div>
+                <div className="w-14 h-14 border-2 border-zinc-900 bg-black flex items-center justify-center flex-shrink-0 group-hover:border-magenta-500 transition-colors shadow-[2px_2px_0px_#000] group-hover:shadow-[2px_2px_0px_#FF00FF]">
+                  <Calendar className="w-6 h-6 text-zinc-800 group-hover:text-magenta-500 transition-colors" />
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-1">
-                    <h3 className="font-bold text-gray-900 truncate">{meeting.title}</h3>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      {format(new Date(meeting.createdAt), 'MMM dd, HH:mm')}
+                  <div className="flex items-center gap-4 mb-2">
+                    <h3 className="font-pixel text-xl uppercase tracking-widest text-cyan-400 truncate group-hover:text-white transition-colors">{meeting.title}</h3>
+                    <div className="h-0.5 flex-1 bg-zinc-900/50" />
+                    <span className="text-[10px] font-mono text-zinc-700 uppercase tracking-tighter shrink-0">
+                      [{format(new Date(meeting.createdAt), 'yyyy.MM.dd')}]
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 line-clamp-1">{meeting.summary}</p>
+                  <p className="text-[10px] font-mono text-zinc-500 line-clamp-1 uppercase tracking-tighter">{" >> "} {meeting.summary}</p>
                 </div>
 
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-3">
                   <Link to={`/meeting/${meeting.id}`}>
-                    <Button variant="ghost" size="icon" className="rounded-xl hover:bg-slate-100">
-                      <ExternalLink className="w-4 h-4 text-slate-400" />
+                    <Button variant="ghost" size="icon" className="rounded-none border border-zinc-900 hover:border-cyan-400 hover:bg-black text-zinc-700 hover:text-cyan-400">
+                      <ExternalLink className="w-4 h-4" />
                     </Button>
                   </Link>
-                  <Button variant="ghost" size="icon" className="rounded-xl hover:bg-red-50 hover:text-red-500">
+                  <Button variant="ghost" size="icon" className="rounded-none border border-zinc-900 hover:border-magenta-500 hover:bg-black text-zinc-700 hover:text-magenta-500">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -117,11 +122,11 @@ export default function History() {
           ))}
 
           {filteredMeetings.length === 0 && (
-            <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-100">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-50 rounded-full mb-4">
-                <Search className="w-6 h-6 text-slate-300" />
+            <div className="text-center py-24 bg-zinc-950 border-2 border-dashed border-zinc-900">
+              <div className="inline-flex items-center justify-center w-20 h-20 border border-zinc-900 bg-black mb-6 text-zinc-900">
+                <Search className="w-8 h-8" />
               </div>
-              <p className="text-gray-500 font-bold">No meetings found matching your search.</p>
+              <p className="text-zinc-600 font-pixel text-xl uppercase tracking-widest">SIGNAL_NOT_FOUND</p>
             </div>
           )}
         </div>

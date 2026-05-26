@@ -58,6 +58,13 @@ export function FollowUpEmailCard({
         body: JSON.stringify({ meetingData })
       });
       
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("Unexpected response from generate-email:", text);
+        throw new Error("Server returned HTML instead of JSON");
+      }
+
       if (!response.ok) throw new Error("Failed to generate");
       
       const data = await response.json();
@@ -111,21 +118,21 @@ export function FollowUpEmailCard({
   };
 
   return (
-    <Card className="border-none shadow-sm shadow-slate-100 rounded-3xl p-8 bg-white relative overflow-hidden group">
+    <Card className="rounded-none border-2 border-zinc-800 bg-zinc-950 p-1 shadow-[8px_8px_0px_#111] overflow-hidden group">
       {/* Glitch Decorative Element */}
       <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity">
         <Terminal className="w-24 h-24 rotate-12" />
       </div>
 
-      <CardHeader className="p-0 mb-6">
+      <CardHeader className="bg-black border-b border-zinc-900 p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600">
+            <div className="w-10 h-10 border border-cyan-400 flex items-center justify-center text-cyan-400 shadow-[2px_2px_0px_#FF00FF]">
               <Mail size={20} />
             </div>
             <div>
-              <CardTitle className="text-xl font-bold tracking-tight">AI Follow-Up Email</CardTitle>
-              <p className="text-xs text-slate-400 font-medium tracking-wide">Professional draft ready for delivery</p>
+              <CardTitle className="text-xl font-pixel uppercase tracking-widest text-white">Neural_Draft</CardTitle>
+              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mt-1">Ready_for_Transmission</p>
             </div>
           </div>
           <Button 
@@ -133,34 +140,29 @@ export function FollowUpEmailCard({
             size="sm" 
             onClick={handleRegenerate} 
             disabled={isGenerating}
-            className="rounded-xl h-9 hover:bg-amber-50 hover:text-amber-600 font-bold text-xs gap-2"
+            className="rounded-none h-9 hover:bg-magenta-500 hover:text-white text-zinc-500 font-pixel text-[10px] uppercase gap-2 border border-transparent hover:border-magenta-400"
           >
             {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <RotateCcw size={14} />}
-            Regenerate
+            RE_SYNTAX
           </Button>
         </div>
       </CardHeader>
 
-      <CardContent className="p-0 space-y-4">
+      <CardContent className="p-8 bg-black space-y-6">
         {/* Subject Line */}
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Subject</label>
-          <div className="bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold text-slate-700">
+          <label className="text-[10px] font-black text-zinc-800 uppercase tracking-[0.3em] px-1">PROTOCOL_ID</label>
+          <div className="bg-zinc-950 border-2 border-zinc-900 rounded-none p-4 text-xs font-mono text-cyan-400">
             {subject}
           </div>
         </div>
 
         {/* Body Area */}
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Message Body</label>
+          <label className="text-[10px] font-black text-zinc-800 uppercase tracking-[0.3em] px-1">PAYLOAD_CONTENT</label>
           <div className="relative">
-            <div className={`bg-slate-50 border-none rounded-2xl p-6 text-sm text-slate-600 leading-relaxed min-h-[200px] whitespace-pre-wrap font-medium transition-all ${isGenerating ? 'blur-sm grayscale' : ''}`}>
-              {body || (
-                <div className="flex flex-col items-center justify-center h-full py-10 text-slate-300 italic">
-                  <Sparkles size={32} className="mb-2 opacity-50" />
-                  Generating draft...
-                </div>
-              )}
+            <div className={`bg-zinc-950 border-2 border-zinc-900 rounded-none p-6 text-[11px] text-zinc-400 leading-relaxed min-h-[220px] whitespace-pre-wrap font-mono transition-all ${isGenerating ? 'blur-sm grayscale opacity-30 italic text-cyan-900' : ''}`}>
+               {isGenerating ? 'DECODING_STREAM_IN_PROGRESS...' : (body || "NO_DATA_RECOVERED")}
             </div>
             
             <AnimatePresence>
@@ -169,11 +171,11 @@ export function FollowUpEmailCard({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 flex items-center justify-center bg-white/40 rounded-2xl backdrop-blur-[2px]"
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
                 >
-                  <div className="bg-white px-4 py-2 rounded-xl shadow-xl shadow-amber-100/50 flex items-center gap-3 border border-amber-100">
-                    <Loader2 className="animate-spin text-amber-500" size={16} />
-                    <span className="text-xs font-bold text-slate-900">AI is thinking...</span>
+                  <div className="bg-black border-2 border-magenta-500 px-6 py-3 shadow-[4px_4px_0px_#00FFFF] flex items-center gap-3">
+                    <Loader2 className="animate-spin text-magenta-500" size={16} />
+                    <span className="text-[10px] font-pixel text-white uppercase tracking-widest">Neural_Engine_Thinking...</span>
                   </div>
                 </motion.div>
               )}
@@ -182,46 +184,46 @@ export function FollowUpEmailCard({
         </div>
 
         {/* Action Bar */}
-        <div className="flex items-center gap-3 pt-2">
+        <div className="flex items-center gap-4 pt-2">
           <Button 
             onClick={handleCopy}
             variant="outline" 
-            className="flex-1 rounded-2xl h-12 border-slate-100 font-bold text-sm bg-white shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2 group"
+            className="flex-1 rounded-none h-12 border-2 border-zinc-800 font-pixel text-xs bg-transparent text-zinc-500 hover:text-cyan-400 hover:border-cyan-400 shadow-[4px_4px_0px_#111] transition-all flex items-center gap-2 group"
           >
-            {isCopied ? <Check size={18} className="text-green-500" /> : <Copy size={18} className="text-slate-400 group-hover:text-slate-600" />}
-            {isCopied ? "Copied" : "Copy Content"}
+            {isCopied ? <Check size={18} className="text-cyan-400" /> : <Copy size={18} />}
+            {isCopied ? "CAPTURED" : "COPY_STRING"}
           </Button>
 
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger 
               render={
-                <Button className="flex-1 bg-[#F59E0B] text-white rounded-2xl h-12 font-bold text-sm shadow-md shadow-amber-100/50 hover:bg-[#D97706] transition-all flex items-center gap-2">
+                <Button className="flex-1 bg-cyan-400 text-black rounded-none h-12 font-pixel text-xs shadow-[4px_4px_0px_#FF00FF] hover:bg-cyan-500 transition-all flex items-center gap-2">
                   <Send size={18} />
-                  Send via Resend
+                  TRANSCEIVE
                 </Button>
               }
             />
-            <DialogContent className="sm:max-w-md rounded-[32px] border-none shadow-2xl p-8">
+            <DialogContent className="sm:max-w-md rounded-none border-2 border-zinc-800 bg-zinc-950 p-8 shadow-[15px_15px_0px_#000]">
               <DialogHeader>
-                <DialogTitle className="text-2xl font-bold tracking-tight">Dispatch AI Email</DialogTitle>
-                <div className="text-xs text-slate-400 font-medium">Deliver this draft directly to stakeholders</div>
+                <DialogTitle className="text-2xl font-pixel text-white uppercase tracking-widest glitch-text">Dispatch_Protocol</DialogTitle>
+                <div className="text-[10px] text-zinc-600 font-mono uppercase tracking-tighter mt-1">Deliver binary draft to remote node</div>
               </DialogHeader>
-              <div className="space-y-4 py-4">
+              <div className="space-y-6 py-6 font-mono">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Recipient Email</label>
+                  <label className="text-[10px] font-black text-zinc-800 uppercase tracking-widest">Target_Address</label>
                   <Input 
-                    placeholder="teammate@company.com" 
+                    placeholder="RECIPIENT@NODE_DOMAIN.ORG" 
                     value={recipient}
                     onChange={(e) => setRecipient(e.target.value)}
-                    className="h-12 rounded-2xl border-slate-100 bg-slate-50 focus:ring-amber-500 font-medium"
+                    className="h-12 rounded-none border-2 border-zinc-900 bg-black focus:border-cyan-400 text-cyan-400 placeholder:text-zinc-900"
                   />
                 </div>
-                <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 flex items-start gap-3">
-                   <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0">
+                <div className="p-5 border-l-4 border-magenta-500 bg-zinc-900/40 flex items-start gap-4">
+                   <div className="w-8 h-8 rounded-none border border-magenta-500 flex items-center justify-center text-magenta-500 flex-shrink-0 animate-pulse">
                       <Mail size={16} />
                    </div>
-                   <div className="text-[11px] text-amber-800 leading-relaxed">
-                      This will be sent using our verified delivery engine. Stakeholders will see <b>NoteGenius</b> as the sender.
+                   <div className="text-[9px] text-zinc-400 uppercase leading-snug tracking-tighter">
+                      Transmission will use the <b className="text-white">NoteGenius_Core</b> proxy. Identity verification required.
                    </div>
                 </div>
               </div>
@@ -229,10 +231,10 @@ export function FollowUpEmailCard({
                 <Button 
                   onClick={handleSend} 
                   disabled={isSending}
-                  className="w-full bg-[#F59E0B] hover:bg-[#D97706] text-white h-12 rounded-2xl font-bold gap-2"
+                  className="w-full bg-cyan-400 hover:bg-cyan-500 text-black h-14 rounded-none font-pixel text-lg shadow-[6px_6px_0px_#FF00FF] transition-all"
                 >
                   {isSending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
-                  Execute Send Operation
+                  INIT_TRANSMISSION
                 </Button>
               </DialogFooter>
             </DialogContent>
